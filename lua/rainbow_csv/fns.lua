@@ -1094,6 +1094,7 @@ M.csv_align = function()
 		end
 		vim.api.nvim_buf_set_lines(0, chunkStart - 1, chunkStart + chunkSize, false, chunk)
         M.draw_line()
+        M.draw_header_line()
 	end
 	if not has_edit then
 		notify_warn 'File is already aligned'
@@ -2180,7 +2181,7 @@ end
 
 function M.draw_line()
   -- Set the highlight group; you can change the color here using a hex value or color name.
-  vim.api.nvim_set_hl(0, "BlueLine", { fg = "green" })
+  vim.api.nvim_set_hl(0, "BlueLine", { fg = "#F18EAC" })
 
   -- Create (or reuse) a namespace for these extmarks
   local ns = vim.api.nvim_create_namespace('comma_line')
@@ -2216,6 +2217,28 @@ function M.draw_line()
       end
     end
   end
+end
+
+-- Define (or update) a highlight group for the header line.
+vim.api.nvim_set_hl(0, "HeaderLineHL", { fg = "#F18EAC" })
+
+function M.draw_header_line()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ns = vim.api.nvim_create_namespace("header_line")
+
+  -- Clear any existing header line extmarks in this namespace.
+  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+
+  -- Get the window width so the line spans the whole screen.
+  local width = vim.fn.winwidth(0)
+  local line = string.rep("─", width)  -- Use Unicode "BOX DRAWINGS LIGHT HORIZONTAL"
+
+  -- Place an extmark on the first line (line 0) and attach a virtual line below it.
+  vim.api.nvim_buf_set_extmark(bufnr, ns, 0, 0, {
+    virt_lines = { { { line, "HeaderLineHL" } } },
+    virt_lines_above = false,  -- adds the virtual line below the marked line
+    hl_mode = "combine",
+  })
 end
 
 return M

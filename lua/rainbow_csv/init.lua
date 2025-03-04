@@ -36,6 +36,7 @@ M.setup = function()
 
 	mkcmd('RbSelect', function() fns.select_from_file() end)
 	mkcmd('RbRun', function() fns.finish_query_editing() end)
+	mkcmd('RbDrawLine', function() fns.draw_line() end)
 
 	mkcmd('Select', function(param) fns.run_select_cmd_query(param.args) end, { nargs = '+' })
 	mkcmd('Update', function(param) fns.run_update_cmd_query(param.args) end, { nargs = '+' })
